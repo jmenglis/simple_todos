@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
@@ -8,7 +9,9 @@ import './body.html';
 
 Template.body.onCreated(function bodyOnCreated() {
   this.state = new ReactiveDict();
-})
+
+  Meteor.subscribe('tasks');
+});
 
 Template.body.helpers({
   tasks() {
@@ -31,10 +34,7 @@ Template.body.events({
     const target = event.target;
     const text = target.text.value;
 
-    Tasks.insert({
-      text,
-      createAt: new Date(),
-    });
+    Meteor.call('tasks.insert', text);
 
     target.text.value = '';
   },
